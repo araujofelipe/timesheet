@@ -3,7 +3,6 @@ package br.com.aisdigital.araujofelipe.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,24 +14,25 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import br.mp.mpdft.medida.api.corporativo.service.CustomUserDetailService;
-import br.mp.mpdft.medida.api.filter.AuthorizationFilter;
+import br.com.aisdigital.araujofelipe.api.service.CustomUserDetailsService;
+import br.com.aisdigital.araujofelipe.filter.AuthorizationFilter;
 
 
 
+@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
-	private CustomUserDetailService customUserDetailService;
+	private CustomUserDetailsService userDetailsService;
 	
 	@Autowired
 	private AuthorizationFilter autorizationFilter;
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(customUserDetailService)
+		auth.userDetailsService(userDetailsService)
 		.passwordEncoder(passwordEncoder());
 	}
 	
@@ -54,8 +54,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.disable()
 		.authorizeRequests()
 		.antMatchers("/api/**")
-		.permitAll()
-		.antMatchers(HttpMethod.OPTIONS, "/**")
 		.authenticated()
 		.and()
 		.exceptionHandling().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

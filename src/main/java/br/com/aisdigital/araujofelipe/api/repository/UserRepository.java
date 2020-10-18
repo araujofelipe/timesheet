@@ -7,5 +7,8 @@ import br.com.aisdigital.araujofelipe.api.repository.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+	
+	User findByLogin(String login);
+	
 
 }

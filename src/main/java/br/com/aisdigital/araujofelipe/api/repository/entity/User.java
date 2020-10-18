@@ -7,13 +7,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import org.springframework.data.annotation.Version;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,11 +34,17 @@ public class User extends AbstractBean {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<TimeCard> timeCards = Stream.of(Month.values()).map(month -> new TimeCard(this, month, null)).collect(Collectors.toList());
+	
+	@Column
 	private String name;
+	
+	@Column(unique = true)
 	private String login;
 	
-	@Version
-	private Long version;
+	@Transient
+	@JsonIgnore
+	private String password = "secret";
+	
 	
 	public User(Long id, String name, String login) {
 		setId(id);

@@ -14,6 +14,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -31,8 +34,9 @@ public class Record extends AbstractBean {
 
 	private static final long serialVersionUID = 1L;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JsonIgnoreProperties(value = {"createdAt", "updatedAt",  "timeCards", "version"})
+	@Fetch(FetchMode.JOIN)
 	private User user;
 	
 	@Column
@@ -55,6 +59,9 @@ public class Record extends AbstractBean {
 	@ManyToOne
 	@JsonIgnoreProperties(value = {"records"})
 	private TimeCard timeCard;
+	
+	@Column
+	private boolean current;//buscar o current para determinar se é fim ou inicio e pela hora, validar o período.
 
 	@PrePersist
 	@Override
