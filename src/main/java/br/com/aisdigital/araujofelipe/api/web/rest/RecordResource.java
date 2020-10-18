@@ -29,7 +29,6 @@ public class RecordResource {
 	@PostMapping("/stamp")
 	public ResponseEntity<Record> stamp(Principal principal, @Validated @RequestBody Record record) throws Exception {
 		User user = this.userService.findByLogin(principal.getName());
-		record.setUser(user);
-		return ResponseEntity.ok(service.stamp(record));
+		return ResponseEntity.ok(service.stamp(user, record));
 	}
 }

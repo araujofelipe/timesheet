@@ -1,14 +1,18 @@
 package br.com.aisdigital.araujofelipe.api.service;
 
+import static br.com.aisdigital.araujofelipe.api.repository.entity.Period.EVENING;
+import static br.com.aisdigital.araujofelipe.api.repository.entity.Period.MORNING;
+
 import java.util.Optional;
 
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import br.com.aisdigital.araujofelipe.api.repository.RecordRepository;
 import br.com.aisdigital.araujofelipe.api.repository.TimeCardRepository;
 import br.com.aisdigital.araujofelipe.api.repository.entity.Record;
 import br.com.aisdigital.araujofelipe.api.repository.entity.TimeCard;
+import br.com.aisdigital.araujofelipe.api.repository.entity.User;
+import br.com.aisdigital.araujofelipe.api.util.TimeAndDateUtil;
 
 @Service
 public class RecordService {
@@ -20,19 +24,55 @@ public class RecordService {
 		this.timeCardRepository = timeCardRepository;
 	}
 	
-	public Record stamp(Record record) throws Exception {
+	public Record stamp(User user, Record record) throws Exception {
 		validateRecord(record);
+		closeOpenedRecord(user, record);
 		TimeCard timeCard = timeCardRepository.findByMonthAndUser(record.getDate().getMonth(), record.getUser());
 		record.setTimeCard(timeCard);
+		record.setUser(user);
 		return repository.save(record);
 	}
 	
+	private void closeOpenedRecord(User user, Record record) {
+		Optional<Record> optionalRecord = Optional.of(repository.findByUserAndDateAndEndIsNull(user, record.getDate()));
+		Record openedRecord = optionalRecord.get();
+		openedRecord.setEnd(record.getStart());
+		repository.save(openedRecord);
+	}
+
 	private void validateRecord(Record record) throws Exception {
-		Example<Record> example = Example.of(record);
-		Optional<Record> actual = repository.findOne(example);
-		if(actual.isPresent()) {
-			throw new Exception();
+		
+		if(TimeAndDateUtil.isAWeekDay(record.getDate())) {
+			throw new Exception("Only week days are permited.");
 		}
+		
+		if(!TimeAndDateUtil.isValidInterval(record.getStart(), record.getEnd())) {
+			throw new Exception("The time interval is invalid.");
+		}
+		validateEvening(record);
+		validateHoursWorked(record);
+		
  	}
+	
+	private void validateHoursWorked(Record record) throws Exception {
+		if(record.getStart() != null && record.getEnd() != null) {
+			long totalHours = TimeAndDateUtil.totalHours(record.getStart(), record.getEnd());
+			if(totalHours > 8) {
+				throw new Exception("Please, have a lunch time!");
+			}
+		}	
+	}
+
+	private boolean validateEvening(Record record) throws Exception {
+		if(record.getPeriod().equals(EVENING)) {
+			if(TimeAndDateUtil.getPeriodByLocalTime(record.getStart()).equals(MORNING)) {
+				throw new Exception("The period is invalid.");
+			}
+			if(repository.hasAMorningPeriodOpenedByDate(record.getDate())) {
+				throw new Exception("The date has a not ended morning period");
+			}
+		}
+		return true;
+	}
 
 }

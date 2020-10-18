@@ -44,7 +44,7 @@ public class Record extends AbstractBean {
 	
 	@Enumerated(EnumType.STRING)
 	@Column
-	private Period period;
+	private Period period = Period.MORNING;
 	
 	@Column
 	private LocalTime start;
@@ -60,9 +60,6 @@ public class Record extends AbstractBean {
 	@JsonIgnoreProperties(value = {"records"})
 	private TimeCard timeCard;
 	
-	@Column
-	private boolean current;//buscar o current para determinar se é fim ou inicio e pela hora, validar o período.
-
 	@PrePersist
 	@Override
 	protected void onCreate() {
