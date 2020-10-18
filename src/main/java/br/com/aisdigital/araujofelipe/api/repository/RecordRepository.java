@@ -1,6 +1,7 @@
 package br.com.aisdigital.araujofelipe.api.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,6 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 	@Query(value = HAS_MORNING_OPENED_RECORD, nativeQuery = true)
 	boolean hasAMorningPeriodOpenedByDate(LocalDate date);
 	
+	
+	List<Record> findByUser(User user);
 }

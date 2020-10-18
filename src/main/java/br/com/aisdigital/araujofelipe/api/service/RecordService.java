@@ -3,7 +3,7 @@ package br.com.aisdigital.araujofelipe.api.service;
 import static br.com.aisdigital.araujofelipe.api.repository.entity.Period.EVENING;
 import static br.com.aisdigital.araujofelipe.api.repository.entity.Period.MORNING;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -34,10 +34,11 @@ public class RecordService {
 	}
 	
 	private void closeOpenedRecord(User user, Record record) {
-		Optional<Record> optionalRecord = Optional.of(repository.findByUserAndDateAndEndIsNull(user, record.getDate()));
-		Record openedRecord = optionalRecord.get();
-		openedRecord.setEnd(record.getStart());
-		repository.save(openedRecord);
+		Record openedRecord  = repository.findByUserAndDateAndEndIsNull(user, record.getDate());
+		if(openedRecord != null) {
+			openedRecord.setEnd(record.getStart());
+			repository.save(openedRecord);
+		}
 	}
 
 	private void validateRecord(Record record) throws Exception {
@@ -73,6 +74,10 @@ public class RecordService {
 			}
 		}
 		return true;
+	}
+
+	public List<Record> fetchAllBy(User user) {
+		return repository.findByUser(user);
 	}
 
 }

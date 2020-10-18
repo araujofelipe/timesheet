@@ -20,6 +20,7 @@ import org.hibernate.annotations.FetchMode;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table
+@Builder
 public class Record extends AbstractBean {
 
 	private static final long serialVersionUID = 1L;
@@ -44,6 +46,7 @@ public class Record extends AbstractBean {
 	
 	@Enumerated(EnumType.STRING)
 	@Column
+	@Builder.Default
 	private Period period = Period.MORNING;
 	
 	@Column
