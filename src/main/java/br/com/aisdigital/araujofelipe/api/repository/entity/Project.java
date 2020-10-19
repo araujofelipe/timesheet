@@ -4,8 +4,10 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -34,7 +36,7 @@ public class Project extends AbstractBean {
 	@Column
 	private String name;
 	
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Record> records = Collections.emptySet();
 
 	@PrePersist
