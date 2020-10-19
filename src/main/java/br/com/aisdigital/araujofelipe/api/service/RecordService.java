@@ -27,7 +27,7 @@ public class RecordService {
 	public Record stamp(User user, Record record) throws Exception {
 		validateRecord(record);
 		closeOpenedRecord(user, record);
-		TimeCard timeCard = timeCardRepository.findByMonthAndUser(record.getDate().getMonth(), record.getUser());
+		TimeCard timeCard = timeCardRepository.findByMonthAndUser(record.getDate().getMonth(), user);
 		record.setTimeCard(timeCard);
 		record.setUser(user);
 		return repository.save(record);

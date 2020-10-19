@@ -46,6 +46,12 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 		byte[] decodeToken = Base64.getDecoder().decode(token);
 		String userPsw = new String(decodeToken, StandardCharsets.UTF_8);
 		final String[] values = userPsw.split(":", 2);
+		
+		if(values[0].isBlank()) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+		
 		userDetails = userDetailsService.loadUserByUsername(values[0]);
 		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
 				new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

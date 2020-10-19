@@ -13,6 +13,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,6 +39,7 @@ public class Project extends AbstractBean {
 	private String name;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JsonIgnoreProperties(value = {"project"})
 	private Set<Record> records = Collections.emptySet();
 
 	@PrePersist
