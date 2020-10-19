@@ -20,12 +20,14 @@ To use the following resource, use a basic authentication
 [POST]
 /api/records/stamp - Stamp a record to user in basic authentication
 Request body example:
+
 ```{
     "date" : "2020-10-19",
     "start" : "13:30",
     "end" : "17:00",
     "project": {"id": 1}//optional
-}```
+}
+```
  
 /api/projects/{projectId}/allocate
 Request body example:
