@@ -65,13 +65,8 @@ public class RecordService {
 	}
 
 	private boolean validateEvening(Record record) throws Exception {
-		if(record.getPeriod().equals(EVENING)) {
-			if(TimeAndDateUtil.getPeriodByLocalTime(record.getStart()).equals(MORNING)) {
-				throw new Exception("The period is invalid.");
-			}
-			if(repository.hasAMorningPeriodOpenedByDate(record.getDate())) {
-				throw new Exception("The date has a not ended morning period");
-			}
+		if(record.getPeriod().equals(EVENING) && TimeAndDateUtil.getPeriodByLocalTime(record.getStart()).equals(MORNING)) {
+			throw new Exception("The period is invalid.");
 		}
 		return true;
 	}

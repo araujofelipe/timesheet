@@ -52,6 +52,10 @@ public class User extends AbstractBean {
 		this.login = login;
 	}
 	
+	public User(Long id) {
+		setId(id);
+	}
+	
 	@PrePersist
 	@Override
 	protected void onCreate() {
