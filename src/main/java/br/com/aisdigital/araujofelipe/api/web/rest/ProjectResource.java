@@ -30,8 +30,8 @@ public class ProjectResource {
 		return ResponseEntity.ok(service.getAll());
 	}
 	
-	@PostMapping("/{projectId}/alocate")
-	public ResponseEntity<Project> alocateRecords(Principal principal, 
+	@PostMapping("/{projectId}/allocate")
+	public ResponseEntity<Project> allocateRecords(Principal principal, 
 				@PathVariable(name = "projectId") Long projectId, 
 				@RequestBody List<Record> records) {
 		return ResponseEntity.ok(service.alocate(projectId, records));
